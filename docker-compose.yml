@@ -1,0 +1,36 @@
+# Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP.NET Core service.
+
+version: '3.4'
+
+services:
+  api:
+    container_name: championsleague-api
+    build:
+      context: ChampionsLeague
+      dockerfile: Dockerfile
+    ports:
+      - 8080:80
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=ga-db;Database=championsleague; User ID=champ;Password=thechamp;
+
+  db:
+    container_name: ga-db
+    build:
+      context: .\MySQL
+      dockerfile: Dockerfile
+    ports:
+    - 5656:3306
+    volumes:
+      - championsleague-vol:/var/lib/mysql
+
+  web:
+      container_name: championsleague-web
+      build:
+        dockerfile: Dockerfile
+        context: Nginx
+      ports:
+        - 80:81
+
+
+volumes:
+  championsleague-vol:
